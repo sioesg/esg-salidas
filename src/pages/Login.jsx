@@ -1,20 +1,42 @@
 import { useState } from "react";
 import logo from "../assets/images/logo.png";
+import { login } from "../services/authApi";
 
 function Login({ onLogin }) {
   const [usuario, setUsuario] = useState("");
   const [password, setPassword] = useState("");
+  const [cargando, setCargando] = useState(false);
+  const [error, setError] = useState("");
 
-  const iniciarSesion = (e) => {
+  const iniciarSesion = async (e) => {
     e.preventDefault();
+    setError("");
 
     if (
-      usuario.trim() !== "" &&
-      password.trim() !== ""
+      usuario.trim() === "" ||
+      password.trim() === ""
     ) {
-      onLogin();
-    } else {
-      alert("Completa todos los campos");
+      setError("Completa todos los campos");
+      return;
+    }
+
+    setCargando(true);
+
+    try {
+      const response = await login({
+        email: usuario.trim(),
+        password,
+      });
+
+      onLogin(response.user);
+    } catch (error) {
+      if (error.status === 401 || error.status === 422) {
+        setError("Usuario o contrasena incorrectos");
+      } else {
+        setError("No fue posible iniciar sesion");
+      }
+    } finally {
+      setCargando(false);
     }
   };
 
@@ -46,12 +68,11 @@ function Login({ onLogin }) {
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              
             </label>
 
             <input
-              type="text"
-              placeholder="Ingresa tu usuario"
+              type="email"
+              placeholder="Ingresa tu correo"
               value={usuario}
               onChange={(e) => setUsuario(e.target.value)}
               className="w-full h-12 border border-gray-300 rounded-lg px-4
@@ -61,12 +82,11 @@ function Login({ onLogin }) {
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              
             </label>
 
             <input
               type="password"
-              placeholder="Ingresa tu contraseña"
+              placeholder="Ingresa tu contrasena"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="w-full h-12 border border-gray-300 rounded-lg px-4
@@ -74,12 +94,19 @@ function Login({ onLogin }) {
             />
           </div>
 
+          {error && (
+            <p className="text-sm text-red-600">
+              {error}
+            </p>
+          )}
+
           <button
             type="submit"
+            disabled={cargando}
             className="w-full h-12 bg-blue-600 hover:bg-blue-700
             text-white font-semibold rounded-lg transition"
           >
-            Ingresar
+            {cargando ? "Ingresando..." : "Ingresar"}
           </button>
 
         </form>

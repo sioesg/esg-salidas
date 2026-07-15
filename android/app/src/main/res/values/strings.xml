@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">esg-salidas-almacen</string>
+    <string name="title_activity_main">esg-salidas-almacen</string>
+    <string name="package_name">com.esg.salidasalmacen</string>
+    <string name="custom_url_scheme">com.esg.salidasalmacen</string>
+</resources>

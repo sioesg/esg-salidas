@@ -3,7 +3,8 @@ import { useState } from "react";
 function Header({
   pantalla,
   setSidebarAbierto,
-  onLogout
+  onLogout,
+  usuario
 }) {
 
   const [menuUsuario, setMenuUsuario] = useState(false);
@@ -27,6 +28,13 @@ function Header({
     }
 
   };
+
+  const iniciales = usuario?.name
+    ?.split(" ")
+    .map((parte) => parte[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase() || "US";
 
   return (
 
@@ -70,7 +78,7 @@ function Header({
           </h2>
 
           <p className="text-sm text-gray-500">
-            Control de almacén
+            Control de almacen
           </p>
 
         </div>
@@ -112,26 +120,24 @@ function Header({
               shrink-0
             "
           >
-            JS
+            {iniciales}
           </div>
 
           <div className="hidden sm:block text-left">
 
             <p className="font-semibold text-gray-800">
-              Juan Sánchez
+              {usuario?.name || "Usuario"}
             </p>
 
             <p className="text-sm text-gray-500">
-              Almacén
+              {usuario?.role?.nombre || "Sin rol"}
             </p>
 
           </div>
 
-
-
         </button>
 
-        {/* MENÚ DESPLEGABLE */}
+        {/* MENU DESPLEGABLE */}
         {menuUsuario && (
 
           <div
@@ -162,7 +168,7 @@ function Header({
                 transition
               "
             >
-              Cerrar sesión
+              Cerrar sesion
             </button>
 
           </div>

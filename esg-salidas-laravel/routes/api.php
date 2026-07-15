@@ -1,49 +1,41 @@
 <?php
 
+use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\DepartamentoController;
+use App\Http\Controllers\Api\ProductoController;
+use App\Http\Controllers\Api\ReporteController;
+use App\Http\Controllers\Api\SalidaController;
+use App\Http\Controllers\Api\UnidadController;
 use Illuminate\Support\Facades\Route;
 
-use App\Http\Controllers\Api\ProductoController;
-use App\Http\Controllers\Api\SalidaController;
-use App\Http\Controllers\Api\DepartamentoController;
-use App\Http\Controllers\Api\UnidadController;
+Route::post('/login', [AuthController::class, 'login']);
 
-/*
-|--------------------------------------------------------------------------
-| API Sistema de Salidas
-|--------------------------------------------------------------------------
-*/
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/me', [AuthController::class, 'me']);
+    Route::post('/logout', [AuthController::class, 'logout']);
 
-Route::prefix('productos')->group(function () {
+    Route::prefix('productos')->group(function () {
+        Route::get('/', [ProductoController::class, 'index']);
+        Route::get('/unidades-medida', [ProductoController::class, 'unidadesMedida']);
+        Route::get('/{id}', [ProductoController::class, 'show']);
+        Route::get('/{id}/existencia', [ProductoController::class, 'existencia']);
+    });
 
-    // Catálogo de productos
-    Route::get('/', [ProductoController::class, 'index']);
+    Route::prefix('salidas')->group(function () {
+        Route::get('/', [SalidaController::class, 'index']);
+        Route::post('/', [SalidaController::class, 'store']);
+        Route::get('/{folio}', [SalidaController::class, 'show']);
+    });
 
-    // Existencia de un producto
-    Route::get('/{id}/existencia', [ProductoController::class, 'existencia']);
+    Route::prefix('departamentos')->group(function () {
+        Route::get('/', [DepartamentoController::class, 'index']);
+    });
 
-    // Unidades de medida
-    Route::get('/unidades-medida', [ProductoController::class, 'unidadesMedida']);
+    Route::prefix('unidades')->group(function () {
+        Route::get('/', [UnidadController::class, 'index']);
+    });
 
-});
-
-Route::prefix('salidas')->group(function () {
-
-    Route::get('/', [SalidaController::class, 'index']);
-
-    Route::post('/', [SalidaController::class, 'store']);
-
-    Route::get('/{folio}', [SalidaController::class, 'show']);
-
-});
-
-Route::prefix('departamentos')->group(function () {
-
-    Route::get('/', [DepartamentoController::class, 'index']);
-
-});
-
-Route::prefix('unidades')->group(function () {
-
-    Route::get('/', [UnidadController::class, 'index']);
-
+    Route::prefix('reportes')->group(function () {
+        Route::get('/resumen', [ReporteController::class, 'resumen']);
+    });
 });

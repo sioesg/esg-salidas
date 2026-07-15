@@ -1,0 +1,8 @@
+{
+  "appId": "com.esg.salidasalmacen",
+  "appName": "esg-salidas-almacen",
+   "webDir": "dist",
+  "server": {
+    "cleartext": true
+  }
+}
